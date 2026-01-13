@@ -1,7 +1,7 @@
 # DuckDB Click Plot (QGIS Plugin)
 
 **Author:** Stephen Kennedy-Clark  
-**Organisation:** Gas & Energy Transition Research Centre (GETRC),  
+**Organisation:** [Gas & Energy Transition Research Centre](https://gas-energy.centre.uq.edu.au/),  
 The University of Queensland  
 
 ---
