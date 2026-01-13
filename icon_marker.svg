@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- Styles -->
+  <defs>
+    <style>
+      .pin { fill: #3478C6; }              /* QGIS-safe blue */
+      .hole { fill: #ffffff; }             /* inner window */
+      .line { stroke: #6b6e72;             /* neutral grey */
+              stroke-width: 1.2;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+              fill: none; }
+    </style>
+  </defs>
+
+  <!-- Outer pin: rounded head with tapered tail -->
+  <path class="pin"
+        d="M8 1.5
+           c-2.9 0 -5.25 2.3 -5.25 5.14
+           c0 2.10 1.35 3.90 3.09 6.15
+           c0.57 0.76 1.22 1.62 2.16 2.71
+           c0.94 -1.09 1.60 -1.95 2.17 -2.71
+           c1.73 -2.25 3.08 -4.05 3.08 -6.15
+           C13.25 3.80 10.90 1.50 8 1.50z"/>
+
+  <!-- Inner circular window -->
+  <circle class="hole" cx="8" cy="6.5" r="3.6"/>
+
+  <!-- Sparkline inside the window (kept simple for 16px clarity) -->
+  <path class="line"
+        d="M5.2 7.6 L6.2 6.7 L7.1 7.3 L7.9 6.2 L9.2 7.4 L10.8 5.4"/>
+</svg>

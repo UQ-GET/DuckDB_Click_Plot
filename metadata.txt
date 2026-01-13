@@ -1,0 +1,22 @@
+[general]
+name=DuckDB Click Plot
+qgisMinimumVersion=3.0
+description=Graphs historic methane data from DuckDB
+version=0.1
+author=Stephen Kennedy-Clark, University of Queensland
+email=uqsken12@uq.edu.au
+
+about=Lightweight internal research tool for exploring gridded emissions data (e.g. EDGAR-derived products) stored in DuckDB. Click a map location to snap to grid, query a time series, plot results, and export CSV for downstream analysis.
+
+tags=duckdb,edgar,emissions,methane,climate,research
+category=Database
+icon=icon.png
+
+hasProcessingProvider=no
+experimental=False
+deprecated=False
+server=False
+
+homepage=
+tracker=
+repository=

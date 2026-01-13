@@ -1,0 +1,36 @@
+<RCC>
+    <!--
+        Qt Resource Collection for DuckDBClickPlot
+
+        This file defines non-code assets (icons, images, etc.)
+        that are compiled into resources.py via pyrcc5 / pb_tool.
+
+        IMPORTANT:
+        - Do NOT edit resources.py directly.
+        - Always edit this file instead, then regenerate resources.py.
+
+        Regeneration:
+          OSGeo4W Shell (recommended):
+            pyrcc5 resources.qrc -o resources.py
+
+          Or via pb_tool:
+            pb_tool compile
+
+        Resource prefix:
+          /plugins/duckdb_click_plot
+
+        Referenced in code as:
+          :/plugins/duckdb_click_plot/icon.png
+    -->
+
+    <qresource prefix="/plugins/duckdb_click_plot">
+        <!--
+            Main toolbar icon for the plugin.
+
+            NOTE:
+            - File path is relative to the plugin root directory.
+            - Filename must match exactly (case-sensitive on Linux/macOS).
+        -->
+        <file>icon.png</file>
+    </qresource>
+</RCC>
