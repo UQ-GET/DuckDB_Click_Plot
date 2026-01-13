@@ -8,33 +8,24 @@ The University of Queensland
 
 ## Overview
 
-**DuckDB Click Plot** is a lightweight QGIS plugin for exploratory analysis of gridded greenhouse-gas emissions time series. The data is sourced from [EDGAR](https://edgar.jrc.ec.europa.eu/)- Emissions Database for Global Atmospheric Research. 
+DuckDB Click Plot is a QGIS plugin for quick exploration of gridded greenhouse-gas emissions time series from the [EDGAR](https://edgar.jrc.ec.europa.eu/) database (Emissions Database for Global Atmospheric Research). 
 
-
-1. Open the plugin and then click anywhere in Queensland (Australia) on the map.  
-2. The click snaps to the nearest 0.1° emissions grid point and creates a historic emissions time series graph.  
-3. Emission substance and industry are selectable, defaulting to CH₄, Totals 
-4. A DuckDB query retrieves the historical emissions time series  
-5. The result is plotted immediately and can be exported to CSV  
-
+Click anywhere in Queensland on the map, and the plugin snaps to the nearest 0.1° grid point and plots historical emissions. Select different substances (CH₄, CO₂, CO₂bio, N₂O) and IPCC sectors. Export time series to CSV.
 
 ---
 
 ## Intended Use
 
-This tool is intended for:
-
-- Rapid inspection of emissions time series at specific locations
-- Comparing substances (CH₄, CO₂, CO₂bio, N₂O) at the same grid point
-- Exploring dominant IPCC sectors spatially
-- Exporting location-specific time series for downstream analysis
+- Quick inspection of emissions time series at specific locations
+- Comparing different substances at the same grid point
+- Exploring spatial patterns in IPCC sectors
+- Exporting location-specific time series for further analysis
 
 ---
 
 ## Data Requirements
 
-The plugin expects a **DuckDB database** with a table named: emissions
-
+The plugin expects a DuckDB database with a table named `emissions`.
 
 ### Required columns
 
@@ -43,147 +34,118 @@ The plugin expects a **DuckDB database** with a table named: emissions
 | `lat`      | DOUBLE     | Grid centre latitude (WGS84) |
 | `lon`      | DOUBLE     | Grid centre longitude (WGS84) |
 | `year`     | INTEGER    | Calendar year |
-| `substance`| TEXT       | e.g. CH4, CO2, CO2bio, N2O |
+| `substance`| TEXT       | e.g. CH₄, CO₂, CO₂bio, N₂O |
 | `sector`   | TEXT       | IPCC sector code (e.g. ENF, IND, TOTALS) |
 | `emission` | DOUBLE     | Emissions value (see units below) |
-| `location`| GEOMETRY   | Optional; required for spatial snapping |
+| `location` | GEOMETRY   | Optional; needed for spatial snapping |
 
-The database for Qld is ~12GB and is not distributed with this plugin. A workflow to download the original data from [EDGAR](https://edgar.jrc.ec.europa.eu/) and create the database is available separately: [Build Queensland EDGAR Database](https://github.com/skennedy-clark/Build_Queensland_EDGAR_Database)
+The Queensland database is ~12GB and not included with this plugin. Get the workflow to build it from EDGAR data here: [Build Queensland EDGAR Database](https://github.com/skennedy-clark/Build_Queensland_EDGAR_Database)
 
 ### Spatial snapping
 
-- If DuckDB's **spatial extension** is available, this plugin uses: ST_Distance(location, ST_Point(lon, lat))
-- If not, it falls back to snapping to **0.1° grid cell centres**  
-(…, 0.05, 0.15, 0.25, …)
+If DuckDB's spatial extension is available, the plugin uses `ST_Distance(location, ST_Point(lon, lat))` for snapping. Otherwise it falls back to rounding to 0.1° grid cell centres (…, 0.05, 0.15, 0.25, …).
 
 ---
 
 ## Units and Conventions
 
-All plotted values are assumed to be: tonnes of substance per (0.1° × 0.1° grid cell) per year
+Values are plotted as: tonnes of substance per (0.1° × 0.1° grid cell) per year
 
-Displayed as: t <SUBSTANCE> · (0.1°)⁻² · yr⁻¹
+Display format: t <SUBSTANCE> · (0.1°)⁻² · yr⁻¹
 
-
-The plugin does **not** convert units. It assumes the DuckDB table is already consistent.
+The plugin doesn't convert units—it assumes the DuckDB table is already consistent.
 
 ---
 
 ## Sector Handling
 
-- The sector dropdown shows **only sectors with non-zero emissions** for the selected substance.
-- "All sectors" behaves as:
-  1. Use `sector = 'TOTALS'` if present
-  2. Otherwise sum the dominant sectors for that substance
+The sector dropdown only shows sectors with non-zero emissions for the selected substance. "All sectors" uses `sector = 'TOTALS'` if present, otherwise sums the dominant sectors.
 
 ---
 
 ## User Interface
 
-The dock widget contains:
+The dock widget shows:
 
-- An information header showing:
-  - Clicked WGS84 coordinates
-  - Substance
-  - IPCC sector (or TOTALS)
-  - Most recent available value and year
+- Clicked coordinates (WGS84)
+- Selected substance and IPCC sector
+- Most recent value and year
 - Substance and sector selectors
-- A time-series plot
-- A CSV export button
+- Time-series plot
+- CSV export button
 
-The map marker indicates the snapped grid point and updates on each click.
+The map marker updates with each click to show the snapped grid point.
 
 ---
 
 ## CSV Export
 
-The **CSV…** button exports the currently displayed time series with columns:
-year, emission
+The CSV button exports the displayed time series with columns: `year, emission`
 
-
-The filename includes:
-- Substance
-- Sector (or TOTALS)
-- Grid latitude and longitude (rounded)
+Filenames include substance, sector, and grid coordinates (rounded).
 
 ---
 
 ## Reproducibility Notes
 
-This plugin is part of an **exploratory analysis stage**.
-
-- All authoritative results should still be generated via scripts
-- The plugin intentionally avoids modifying the source data
-- Any insight gained here should be traceable back to scripted queries
+This plugin is for exploratory analysis. Generate authoritative results via scripts. The plugin doesn't modify source data—any insights should be traceable to scripted queries.
 
 ---
 
 ## Known Limitations
 
-- The underlying EDGAR data is based on modeling assumptions from reported current and historical industry activities. This data is not based on current observations. The limitations of the EDGAR modeling process are discussed in [Uncertainties in the Emissions Database for Global Atmospheric Research (EDGAR) emission inventory of greenhouse gases](https://publications.jrc.ec.europa.eu/repository/handle/JRC122204)
-  
+The EDGAR data comes from modelling assumptions based on reported industry activities, not direct observations. See [Uncertainties in the Emissions Database for Global Atmospheric Research (EDGAR) emission inventory of greenhouse gases](https://publications.jrc.ec.europa.eu/repository/handle/JRC122204) for discussion of limitations.
 
 ---
 
 ##  Installation
+
 ### QGIS plugin installation
 
-- This plugin is most easily installed as a ZIP archive.
-1. Download and Zip this repository
+Install as a ZIP archive:
+
+1. Download and zip this repository
 2. Open QGIS
 3. Go to Plugins → Manage and Install Plugins…
 4. Select Install from ZIP
 5. Choose the duckdb_click_plot.zip
-6. Enable the plugin when prompted
+6. Enable when prompted
 
-Once installed, the plugin is available via the toolbar as DuckDB Click Plot.
+The plugin appears in the toolbar as DuckDB Click Plot.
 
 ### Python dependency: DuckDB
 
-This plugin requires the Python package duckdb to be available in the QGIS Python environment.
-
-- On Windows, QGIS uses the OSGeo4W Python, not system Python.
+You need the `duckdb` Python package in the QGIS Python environment. On Windows, QGIS uses OSGeo4W Python, not system Python.
 
 #### Install DuckDB (Windows)
 
 1. Open OSGeo4W Shell
-2. Run:
-  ```bash
-  python -m pip install duckdb
-  ```
-- Verify inside QGIS
-After restarting QGIS open QGIS → Plugins → Python Console and run:
+2. Run: `python -m pip install duckdb`
+
+Verify in QGIS → Plugins → Python Console:
 ```python
 import duckdb
 duckdb.__version__
 ```
-If this succeeds, the dependency is installed correctly.
 
-The plugin does not attempt to install Python packages automatically. It does try to load and use DuckDB's spatial extension to optimise nearest-grid snapping.
-If the extension is not available or cannot be installed, the plugin falls back to a python/sql solution. 
+The plugin tries to load DuckDB's spatial extension for optimised grid snapping. If unavailable, it falls back to a python/sql solution. It won't attempt to install packages automatically.
+
+---
 
 ## Example DuckDB Queries for Parquet Outputs
 
-The following queries illustrate how to generate analysis-ready Parquet files for each substance. These products are suitable for:
+These queries generate analysis-ready Parquet files suitable for time-series animations in QGIS, rasterisation workflows, or independent visualisation.
 
-- Time-series animations in QGIS
-- Rasterisation workflows
-- Aggregated visualisation independent of the plugin
-All examples assume a base table:
-```sql
-emissions(lat, lon, year, substance, sector, emission, location)
-```
+All examples assume: `emissions(lat, lon, year, substance, sector, emission, location)`
+
 ### 1. Annual totals per grid cell (single substance)
-Example: **CH₄ totals, all years**
+
+CH₄ totals, all years:
 ```sql
 COPY (
-    SELECT
-        lat,
-        lon,
-        year,
-        emission
+    SELECT lat, lon, year, emission
     FROM emissions
-    WHERE substance = 'CH4'
+    WHERE substance = 'CH₄'
       AND sector = 'TOTALS'
 ) TO 'ch4_totals_all_years_grid.parquet'
   (FORMAT PARQUET);
@@ -191,15 +153,12 @@ COPY (
 
 ### 2. Single-year grid (for raster layers)
 
-Example: **CH₄ totals for 2024**
+CH₄ totals for 2024:
 ```sql
 COPY (
-    SELECT
-        lat,
-        lon,
-        emission
+    SELECT lat, lon, emission
     FROM emissions
-    WHERE substance = 'CH4'
+    WHERE substance = 'CH₄'
       AND sector = 'TOTALS'
       AND year = 2024
 ) TO 'ch4_totals_2024_grid.parquet'
@@ -208,26 +167,22 @@ COPY (
 
 ### 3. Dominant-sector time series 
 
-Example: **Top emitting CH₄ sectors only**
+Top emitting CH₄ sectors:
 
 ```sql
 WITH top_sectors AS (
     SELECT sector
     FROM emissions
-    WHERE substance = 'CH4'
+    WHERE substance = 'CH₄'
       AND sector != 'TOTALS'
     GROUP BY sector
     HAVING SUM(emission) > 0
     ORDER BY SUM(emission) DESC
     LIMIT 8
 )
-SELECT
-    lat,
-    lon,
-    year,
-    SUM(emission) AS emission
+SELECT lat, lon, year, SUM(emission) AS emission
 FROM emissions
-WHERE substance = 'CH4'
+WHERE substance = 'CH₄'
   AND sector IN (SELECT sector FROM top_sectors)
 GROUP BY lat, lon, year;
 ```
@@ -235,43 +190,37 @@ GROUP BY lat, lon, year;
 ### 4. Geometry-aware export (requires spatial extension)
 ```sql
 COPY (
-    SELECT
-        lat,
-        lon,
-        year,
-        emission,
-        location
+    SELECT lat, lon, year, emission, location
     FROM emissions
-    WHERE substance = 'CH4'
+    WHERE substance = 'CH₄'
       AND sector = 'TOTALS'
 ) TO 'ch4_totals_all_years_grid_geom.parquet'
   (FORMAT PARQUET);
 ```
 
+---
+
 ## Notes on Animation Workflows
 
-These Parquet outputs can be loaded directly into QGIS
+Load these Parquet outputs directly into QGIS. Use Temporal Controller with `year` as the temporal field. For rasterisation, Parquet → GeoPackage → Raster is usually fastest.
 
-Use Temporal Controller with year as the temporal field
-
-For rasterisation, Parquet → GeoPackage → Raster is typically fastest
-
-The plugin itself does not depend on these Parquet files; they are complementary products to support reproducible research. 
+These Parquet files are complementary products to support reproducible research—the plugin itself doesn't depend on them.
 
 ### Export DuckDB database queries as CSV
-1. Command-line / DuckDB shell
+
+**Command-line / DuckDB shell:**
 ```sql
 COPY (
     SELECT *
     FROM emissions
-    WHERE substance = 'CH4'
+    WHERE substance = 'CH₄'
       AND sector = 'TOTALS'
 ) TO 'ch4_totals.csv'
   (HEADER, DELIMITER ',');
 ```
-note: COPY is fast and streams directly to disk. Use a subquery so you don't mutate tables.
+Note: COPY is fast and streams directly to disk. Use a subquery to avoid mutating tables.
 
-2. From Python
+**From Python:**
 ```python
 import duckdb
 
@@ -279,32 +228,28 @@ con = duckdb.connect("emissions.duckdb", read_only=True)
 
 con.execute("""
     COPY (
-        SELECT
-            lat, lon, year, emission
+        SELECT lat, lon, year, emission
         FROM emissions
-        WHERE substance = 'CH4'
+        WHERE substance = 'CH₄'
           AND sector = 'TOTALS'
     )
     TO 'ch4_totals.csv'
     (HEADER, DELIMITER ',')
 """)
-
 ```
-Advantages: No pandas dependency. Very fast for large tables. Suitable for scripted pipelines.
+No pandas dependency. Fast for large tables. Good for scripted pipelines.
 
-Further analytics in Python should consider using **Polars**, due to the multi-GB results **Pandas** is not recommended. 
+For large-scale analysis consider using Polars—Pandas isn't recommended for multi-GB results.
 
+---
 
 ## Licensing
 
-This plugin is released under the GNU General Public License (GPL),  
-consistent with QGIS plugin requirements.
+Released under the GNU General Public License (GPL), consistent with QGIS plugin requirements.
 
 ---
 
 ## Contact
-
-For questions, extensions, or internal use discussions:
 
 **Stephen Kennedy-Clark**  
 Gas & Energy Transition Research Centre  
