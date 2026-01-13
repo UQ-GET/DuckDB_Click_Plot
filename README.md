@@ -11,9 +11,9 @@ The University of Queensland
 **DuckDB Click Plot** is a lightweight QGIS plugin for exploratory analysis of gridded greenhouse-gas emissions time series. The data is sourced from [EDGAR](https://edgar.jrc.ec.europa.eu/)- Emissions Database for Global Atmospheric Research. 
 
 
-1. Open the plugin and then click anywhere in Queansland (Australia) on the map.  
-2. The click snaps to the nearest 0.1° emissions grid point and creats a historic emissions time series graph.  
-3. Emission substance and industery are selectable, defaulting to CH₄, Totals 
+1. Open the plugin and then click anywhere in Queensland (Australia) on the map.  
+2. The click snaps to the nearest 0.1° emissions grid point and creates a historic emissions time series graph.  
+3. Emission substance and industry are selectable, defaulting to CH₄, Totals 
 4. A DuckDB query retrieves the historical emissions time series  
 5. The result is plotted immediately and can be exported to CSV  
 
@@ -48,11 +48,11 @@ The plugin expects a **DuckDB database** with a table named: emissions
 | `emission` | DOUBLE     | Emissions value (see units below) |
 | `location`| GEOMETRY   | Optional; required for spatial snapping |
 
-The database for Qld is ~12GB and is not distrubuted with this plugin. A workflow to download the origional data from [EDGAR](https://edgar.jrc.ec.europa.eu/) and create the database is avalabel seperatly: [Build Queensland EDGAR Database](https://github.com/skennedy-clark/Build_Queensland_EDGAR_Database)
+The database for Qld is ~12GB and is not distributed with this plugin. A workflow to download the original data from [EDGAR](https://edgar.jrc.ec.europa.eu/) and create the database is available separately: [Build Queensland EDGAR Database](https://github.com/skennedy-clark/Build_Queensland_EDGAR_Database)
 
 ### Spatial snapping
 
-- If DuckDB’s **spatial extension** is available, this plugin uses: ST_Distance(location, ST_Point(lon, lat))
+- If DuckDB's **spatial extension** is available, this plugin uses: ST_Distance(location, ST_Point(lon, lat))
 - If not, it falls back to snapping to **0.1° grid cell centres**  
 (…, 0.05, 0.15, 0.25, …)
 
@@ -72,7 +72,7 @@ The plugin does **not** convert units. It assumes the DuckDB table is already co
 ## Sector Handling
 
 - The sector dropdown shows **only sectors with non-zero emissions** for the selected substance.
-- “All sectors” behaves as:
+- "All sectors" behaves as:
   1. Use `sector = 'TOTALS'` if present
   2. Otherwise sum the dominant sectors for that substance
 
@@ -120,7 +120,7 @@ This plugin is part of an **exploratory analysis stage**.
 
 ## Known Limitations
 
-- The underlying EDGAR data is based on modeling assumptions from reported current and historical industery acttivities. This data is not based on current observations. nThe limitations of the EDGAR modeling process are discussed in [Uncertainties in the Emissions Database for Global Atmospheric Research (EDGAR) emission inventory of greenhouse gases](https://publications.jrc.ec.europa.eu/repository/handle/JRC122204)
+- The underlying EDGAR data is based on modeling assumptions from reported current and historical industry activities. This data is not based on current observations. The limitations of the EDGAR modeling process are discussed in [Uncertainties in the Emissions Database for Global Atmospheric Research (EDGAR) emission inventory of greenhouse gases](https://publications.jrc.ec.europa.eu/repository/handle/JRC122204)
   
 
 ---
@@ -159,7 +159,7 @@ duckdb.__version__
 ```
 If this succeeds, the dependency is installed correctly.
 
-The plugin does not attempt to install Python packages automatically. It does try to load and use DuckDB’s spatial extension to optomise nearest-grid snapping.
+The plugin does not attempt to install Python packages automatically. It does try to load and use DuckDB's spatial extension to optimise nearest-grid snapping.
 If the extension is not available or cannot be installed, the plugin falls back to a python/sql solution. 
 
 ## Example DuckDB Queries for Parquet Outputs
@@ -256,10 +256,10 @@ Use Temporal Controller with year as the temporal field
 
 For rasterisation, Parquet → GeoPackage → Raster is typically fastest
 
-The plugin itself does not depend on these Parquet files; they are complementary products to support reproduciable rescearch. 
+The plugin itself does not depend on these Parquet files; they are complementary products to support reproducible research. 
 
 ### Export DuckDB database queries as CSV
-1. Comandline / DuckDB shell
+1. Command-line / DuckDB shell
 ```sql
 COPY (
     SELECT *
@@ -269,7 +269,7 @@ COPY (
 ) TO 'ch4_totals.csv'
   (HEADER, DELIMITER ',');
 ```
-note: COPY is fast and streams directly to disk. Use a subquery so you don’t mutate tables.
+note: COPY is fast and streams directly to disk. Use a subquery so you don't mutate tables.
 
 2. From Python
 ```python
@@ -292,7 +292,7 @@ con.execute("""
 ```
 Advantages: No pandas dependency. Very fast for large tables. Suitable for scripted pipelines.
 
-Further analytics in Python should consider using **Polars**,  due to the multi-GB results **Pandas** is not recomended. 
+Further analytics in Python should consider using **Polars**, due to the multi-GB results **Pandas** is not recommended. 
 
 
 ## Licensing
@@ -310,10 +310,3 @@ For questions, extensions, or internal use discussions:
 Gas & Energy Transition Research Centre  
 The University of Queensland  
 uqsken12@uq.edu.au
-
-
-
-
-
-
-
