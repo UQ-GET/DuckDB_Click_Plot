@@ -17,6 +17,6 @@ experimental=False
 deprecated=False
 server=False
 
-homepage=
-tracker=
-repository=
+homepage=https://github.com/UQ-GET/DuckDB_Click_Plot/blob/main/README.md
+tracker=https://github.com/UQ-GET/DuckDB_Click_Plot/issues
+repository=https://github.com/UQ-GET/DuckDB_Click_Plot
