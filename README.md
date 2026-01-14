@@ -198,6 +198,58 @@ COPY (
   (FORMAT PARQUET);
 ```
 
+### 5. Prove that top 8 sectors account for at least 0.95 of the data 
+
+```sql
+WITH sums AS (
+  SELECT substance, SUM(emission) AS total_non_totals
+  FROM emissions
+  WHERE sector != 'TOTALS'
+  GROUP BY substance
+),
+top8 AS (
+  SELECT substance, SUM(emission) AS top8_total
+  FROM (
+    SELECT
+      substance, sector, emission,
+      ROW_NUMBER() OVER (
+        PARTITION BY substance
+        ORDER BY emission DESC
+      ) AS rn
+    FROM (
+      SELECT substance, sector, SUM(emission) AS emission
+      FROM emissions
+      WHERE sector != 'TOTALS'
+      GROUP BY substance, sector
+    )
+  )
+  WHERE rn <= 8
+  GROUP BY substance
+)
+SELECT
+  s.substance,
+  t.top8_total,
+  s.total_non_totals,
+  (t.top8_total / s.total_non_totals) AS frac_top8
+FROM sums s
+JOIN top8 t USING (substance)
+ORDER BY frac_top8 DESC;
+```
+
+### 6. Total for each substance, for each industry, for all of Queensland 
+
+```sql
+SELECT
+	substance,
+    sector,
+    SUM(emission) AS total
+FROM emissions
+--WHERE substance = ?
+GROUP BY substance, sector
+HAVING SUM(emission) > 0
+ORDER BY substance, total DESC;
+```
+
 ---
 
 ## Notes on Animation Workflows
