@@ -198,7 +198,7 @@ COPY (
   (FORMAT PARQUET);
 ```
 
-### 5. Prove that top 8 sectors account for at least 0.95 of the data 
+### 5. Proof that top 8 sectors account for at least 0.95 of the data 
 
 ```sql
 WITH sums AS (
